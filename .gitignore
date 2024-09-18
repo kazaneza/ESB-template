@@ -1,0 +1,6 @@
+# Ignore the virtual environment folder
+myenv/
+
+# Other files or directories to ignore can go here
+*.pyc
+__pycache__/

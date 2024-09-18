@@ -8,9 +8,9 @@ var open = require('gulp-open');
 var Paths = {
   HERE: './',
   DIST: 'dist/',
-  CSS: './assets/css/',
-  SCSS_TOOLKIT_SOURCES: './assets/scss/material-dashboard.scss',
-  SCSS: './assets/scss/**/**'
+  CSS: './static/css/',
+  SCSS_TOOLKIT_SOURCES: './static/scss/material-dashboard.scss',
+  SCSS: './static/scss/**/**'
 };
 
 gulp.task('compile-scss', function() {
@@ -27,7 +27,7 @@ gulp.task('watch', function() {
 });
 
 gulp.task('open', function() {
-  gulp.src('pages/dashboard.html')
+  gulp.src('templates/dashboard.html')
     .pipe(open());
 });
 
