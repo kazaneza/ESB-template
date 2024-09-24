@@ -1,0 +1,7 @@
+2024-09-23 15:16:50,549 - INFO - Attempting to connect to the database...
+2024-09-23 15:17:00,589 - ERROR - Failed to connect to the database.
+Traceback (most recent call last):
+  File "C:\Users\gkazeneza\Desktop\dashboard\material-dashboard\python\connection.py", line 21, in <module>
+    conn = pyodbc.connect(conn_str, timeout=10)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pyodbc.OperationalError: ('08001', '[08001] [Microsoft][ODBC Driver 17 for SQL Server]TCP Provider: Timeout error [258].  (258) (SQLDriverConnect); [08001] [Microsoft][ODBC Driver 17 for SQL Server]Login timeout expired (0); [08001] [Microsoft][ODBC Driver 17 for SQL Server]Unable to complete login process due to delay in prelogin response (258)')
