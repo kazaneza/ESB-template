@@ -1,5 +1,9 @@
 from flask import Flask, render_template, jsonify
 from data.datahub import start_cache_updater, cache
+from graph.graph1 import create_graph_failure
+from graph.graph2 import create_graph_success
+from graph.graph3 import create_graph_pending
+
 import threading
 
 app = Flask(__name__)
@@ -14,6 +18,11 @@ datahub_thread.start()
 
 @app.route('/')
 def index():
+    
+    graph_failure = create_graph_failure()  
+    graph_success = create_graph_success()  
+    graph_pending = create_graph_pending()  
+
     # Fetch success rates and moving averages for each service from the cache
     success_rates = {
         'TELCO_PUSH_TRANS': {
@@ -42,7 +51,10 @@ def index():
         }
     }
 
-    return render_template('dashboard.html', success_rates=success_rates)
+    return render_template('dashboard.html', success_rates=success_rates,
+                           create_graph_failure=graph_failure,
+                           create_graph_success=graph_success,
+                           create_graph_pending=graph_pending)
 
 @app.route('/api/success_rates', methods=['GET'])
 def get_success_rates():

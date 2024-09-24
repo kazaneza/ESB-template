@@ -28,6 +28,52 @@
   <!-- Nepcha Analytics (nepcha.com) -->
   <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
   <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
+  <style>
+    /* Customizing the dropdown toggle button */
+    .nav-link.dropdown-toggle {
+        background-color: #343a40; /* Dark background */
+        color: white;              /* White text */
+        padding: 10px 15px;        /* Custom padding */
+        border-radius: 5px;        /* Rounded corners */
+    }
+
+    /* Hover effect for the dropdown toggle */
+    .nav-link.dropdown-toggle:hover {
+        background-color: #495057; /* Lighter dark shade */
+        color: #f8f9fa;            /* Slightly lighter text */
+    }
+
+    /* Customizing the dropdown menu */
+    .dropdown-menu {
+        background-color: #6c757d; /* Custom background color */
+        border-radius: 8px;        /* Rounded corners */
+        padding: 10px;             /* Padding inside the dropdown */
+        transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    }
+
+    /* Customizing dropdown items */
+    .dropdown-item {
+        color: #ffffff;            /* White text */
+    }
+
+    /* Hover effect for dropdown items */
+    .dropdown-item:hover {
+        background-color: #495057; /* Darker background on hover */
+        color: #f8f9fa;            /* Light text on hover */
+    }
+
+    /* Customizing the "Custom Range" item */
+    .dropdown-item:last-child {
+        font-weight: bold;         /* Bold font for the last item */
+        background-color: #343a40; /* Different background color */
+    }
+
+    /* Hover effect for the "Custom Range" */
+    .dropdown-item:last-child:hover {
+        background-color: #212529; /* Even darker background on hover */
+    }
+</style>
+
 
 </head>
 
@@ -71,23 +117,22 @@
           </button>
   
           <!-- Navbar links -->
-          <div class="collapse navbar-collapse" id="navbarNavDropdown">
-              <ul class="navbar-nav ms-auto">
-                  <!-- Dropdown for selecting time range -->
-                  <li class="nav-item dropdown">
-                      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                          Select Time Range
-                      </a>
-                      <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                          <li><a class="dropdown-item" href="#">Last 5 minutes</a></li>
-                          <li><a class="dropdown-item" href="#">Last 30 minutes</a></li>
-                          <li><a class="dropdown-item" href="#">Last 1 hour</a></li>
-                          <li><a class="dropdown-item" href="#">Last 24 hours</a></li>
-                          <li><a class="dropdown-item" href="#">Custom Range</a></li>
-                      </ul>
-                  </li>
-              </ul>
-          </div>
+          <div class="container-fluid">
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Select Time Range
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <li><a class="dropdown-item" href="#">Last 5 minutes</a></li>
+                        <li><a class="dropdown-item" href="#">Last 30 minutes</a></li>
+                        <li><a class="dropdown-item" href="#">Last 1 hour</a></li>
+                        <li><a class="dropdown-item" href="#">Last 24 hours</a></li>
+                        <li><a class="dropdown-item" href="#">Custom Range</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
       </div>
   </nav>
   
@@ -278,7 +323,7 @@
                 <div class="chart">
                   
                   <div style="position: relative; height: 100%; width: 400px;">
-                    <img src="{{ create_graph_failure }}" alt="Graph" style="width: 92%; height: 80%; position: relative; top: -10px;">
+                    <img src="{{ create_graph_success }}" alt="Graph" style="width: 92%; height: 80%; position: relative; top: -10px;">
                 </div>
                 
                 
@@ -324,7 +369,7 @@
             <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
               <div class="bg-gradient-dark shadow-dark border-radius-lg py-3 pe-1">
                 <div style="position: relative; height: 100%; width: 400px;">
-                  <img src="{{ create_graph_success }}" alt="Graph" style="width: 92%; height: 80%; position: relative; top: -10px;">
+                  <img src="{{ create_graph_pending }}" alt="Graph" style="width: 92%; height: 80%; position: relative; top: -10px;">
               </div>
               </div>
             </div>
@@ -1084,6 +1129,33 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
   <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
   <script src="/static/js/dashboard.js"></script>
+  <script>
+    // Adjusting the Popper.js offset for dropdown and disabling adaptive
+    var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
+    var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
+        return new bootstrap.Dropdown(dropdownToggleEl, {
+            popperConfig: function () {
+                return {
+                    modifiers: [
+                        {
+                            name: 'offset',
+                            options: {
+                                offset: [0, 8], // Add spacing between the toggle and dropdown
+                            },
+                        },
+                        {
+                            name: 'computeStyles', // Disable adaptive to allow smooth transitions
+                            options: {
+                                adaptive: false
+                            }
+                        }
+                    ],
+                };
+            },
+        });
+    });
+</script>
+
 </body>
 
 </html>
