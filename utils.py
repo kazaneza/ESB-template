@@ -12,7 +12,8 @@ services = [
     'EKash_transfer'
 ]
 
-def get_success_rates():
+
+def get_success_rates(services):
     success_rates = {}
     for service in services:
         service_cache = cache.get(service, {})
@@ -21,6 +22,7 @@ def get_success_rates():
             'moving_average_amount': service_cache.get('moving_average_amount', "N/A")
         }
     return success_rates
+
 
 def start_datahub_thread():
     from data.datahub import start_cache_updater  # Avoid circular imports

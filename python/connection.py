@@ -11,10 +11,16 @@ logging.basicConfig(
 # Connection string
 conn_str = (
     'DRIVER={ODBC Driver 17 for SQL Server};'
-    'SERVER=lsttest;'
+    'SERVER=10.103.34.23;'
     'DATABASE=TELCOPUSHPULL;'
-    'Trusted_Connection=yes;'
+    'UID=splunkpost;'
+    'PWD={Splunk@&*1!};'
+    'Encrypt=Yes;'
+    'TrustServerCertificate=Yes;'
 )
+
+
+
 
 try:
     logging.info("Attempting to connect to the database...")

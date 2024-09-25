@@ -5,3 +5,40 @@ Traceback (most recent call last):
     conn = pyodbc.connect(conn_str, timeout=10)
          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 pyodbc.OperationalError: ('08001', '[08001] [Microsoft][ODBC Driver 17 for SQL Server]TCP Provider: Timeout error [258].  (258) (SQLDriverConnect); [08001] [Microsoft][ODBC Driver 17 for SQL Server]Login timeout expired (0); [08001] [Microsoft][ODBC Driver 17 for SQL Server]Unable to complete login process due to delay in prelogin response (258)')
+2024-09-25 15:12:24,138 - INFO - Attempting to connect to the database...
+2024-09-25 15:12:34,356 - ERROR - Failed to connect to the database.
+Traceback (most recent call last):
+  File "C:\Users\gkazeneza\Desktop\dashboard\material-dashboard\python\connection.py", line 23, in <module>
+    conn = pyodbc.connect(conn_str, timeout=10)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pyodbc.OperationalError: ('08001', '[08001] [Microsoft][ODBC Driver 17 for SQL Server]Named Pipes Provider: Could not open a connection to SQL Server [2].  (2) (SQLDriverConnect); [08001] [Microsoft][ODBC Driver 17 for SQL Server]Login timeout expired (0); [08001] [Microsoft][ODBC Driver 17 for SQL Server]A network-related or instance-specific error has occurred while establishing a connection to SQL Server. Server is not found or not accessible. Check if instance name is correct and if SQL Server is configured to allow remote connections. For more information see SQL Server Books Online. (2)')
+2024-09-25 15:19:01,929 - INFO - Attempting to connect to the database...
+2024-09-25 15:19:02,273 - ERROR - Failed to connect to the database.
+Traceback (most recent call last):
+  File "C:\Users\gkazeneza\Desktop\dashboard\material-dashboard\python\connection.py", line 23, in <module>
+    conn = pyodbc.connect(conn_str, timeout=10)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pyodbc.InterfaceError: ('28000', "[28000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Login failed for user 'splunkpost'. (18456) (SQLDriverConnect); [28000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Login failed for user 'splunkpost'. (18456)")
+2024-09-25 15:29:30,709 - INFO - Attempting to connect to the database...
+2024-09-25 15:29:30,726 - ERROR - Failed to connect to the database.
+Traceback (most recent call last):
+  File "C:\Users\gkazeneza\Desktop\dashboard\material-dashboard\python\connection.py", line 26, in <module>
+    conn = pyodbc.connect(conn_str, timeout=10)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pyodbc.OperationalError: ('08001', "[08001] [Microsoft][ODBC Driver 17 for SQL Server]Invalid value specified for connection string attribute 'Encrypt' (0) (SQLDriverConnect)")
+2024-09-25 15:29:35,829 - INFO - Attempting to connect to the database...
+2024-09-25 15:29:35,844 - ERROR - Failed to connect to the database.
+Traceback (most recent call last):
+  File "C:\Users\gkazeneza\Desktop\dashboard\material-dashboard\python\connection.py", line 26, in <module>
+    conn = pyodbc.connect(conn_str, timeout=10)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pyodbc.OperationalError: ('08001', "[08001] [Microsoft][ODBC Driver 17 for SQL Server]Invalid value specified for connection string attribute 'Encrypt' (0) (SQLDriverConnect)")
+2024-09-25 15:30:49,284 - INFO - Attempting to connect to the database...
+2024-09-25 15:30:51,025 - ERROR - Failed to connect to the database.
+Traceback (most recent call last):
+  File "C:\Users\gkazeneza\Desktop\dashboard\material-dashboard\python\connection.py", line 27, in <module>
+    conn = pyodbc.connect(conn_str, timeout=10)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pyodbc.InterfaceError: ('28000', "[28000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Login failed for user 'splunkpost'. (18456) (SQLDriverConnect); [28000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Login failed for user 'splunkpost'. (18456)")
+2024-09-25 16:34:18,870 - INFO - Attempting to connect to the database...
+2024-09-25 16:34:19,407 - INFO - Connected to the database successfully!

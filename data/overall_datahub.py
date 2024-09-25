@@ -1,24 +1,22 @@
-import pandas as pd
-from sqlalchemy import create_engine
-import schedule
+import pyodbc
+import threading
 import time
 
-cache = {}
-moving_average_window = 7
+# Cache for overall metrics
+overall_cache = {}
 
-connections = {
-    'TELCOPUSHPULL': 'mssql+pyodbc://splunkpost:Splunk%40%26%2A1%21@10.103.34.23/TELCOPUSHPULL?driver=ODBC+Driver+17+for+SQL+Server',
-    'RRAACCOUNTS': 'mssql+pyodbc://splunkpost:Splunk%40%26%2A1%21@10.103.34.23/RRAACCOUNTS?driver=ODBC+Driver+17+for+SQL+Server',
-    'IREMBOGATEWAY': 'mssql+pyodbc://splunkpost:Splunk%40%26%2A1%21@10.103.34.23/IREMBOGATEWAY?driver=ODBC+Driver+17+for+SQL+Server',
-    'ESB_SERVICES': 'mssql+pyodbc://splunkpost:Splunk%40%26%2A1%21@10.103.34.23/ESB_SERVICES?driver=ODBC+Driver+17+for+SQL+Server'
-}
+def fetch_overall_metrics():
+    # Connection string to connect to your SQL Server
+    conn_str = (
+        "Driver={ODBC Driver 17 for SQL Server};"
+        "Server=10.103.34.23;"
+        "UID=splunkpost;"
+        "PWD=Splunk@&*1!;"
+    )
 
-
-def load_data_to_cache():
-    services = {
-        'TELCO_PUSH_TRANS': {
-            'query': """
-                WITH TELCO_PUSH AS (
+    # Your SQL query with explicit database references
+    sql_query = """
+    WITH TELCO_PUSH AS (
     SELECT 
         COUNT(*) AS Total_Transactions,
         SUM(CASE WHEN CBS_STATUS = 'SUCCESS' THEN 1 ELSE 0 END) AS Completed_Transactions,
@@ -30,7 +28,8 @@ def load_data_to_cache():
         SUM(CASE WHEN CBS_STATUS = 'PENDING' THEN AMOUNT ELSE 0 END) AS Pending_Amount,
         SUM(CASE WHEN CBS_STATUS NOT IN ('SUCCESS', 'PENDING') THEN AMOUNT ELSE 0 END) AS Failed_Amount
     FROM TELCOPUSHPULL.dbo.TELCO_PUSH_TRANS
-    WHERE TRY_CONVERT(DATETIMEOFFSET, TRANS_DT, 126) >= DATEADD(DAY, -150, SYSDATETIMEOFFSET())
+    WHERE CAST(TRY_CONVERT(DATETIMEOFFSET, TRANS_DT, 126) AS DATE) = CAST(SYSDATETIMEOFFSET() AS DATE)
+
 ),
 TELCO_PULL AS (
     SELECT 
@@ -98,17 +97,17 @@ SELECT
     -- Success metrics
     FORMAT(SUM(Completed_Transactions), 'N0') AS Overall_Successful_Transactions,
     FORMAT(SUM(Success_Amount), 'N2') AS Overall_Successful_Amount,
-    FORMAT(SUM(Completed_Transactions) * 1.0 / NULLIF(SUM(Total_Transactions), 0), 'P2') AS Overall_Success_Rate,
+    FORMAT(ROUND(SUM(Completed_Transactions) * 100.0 / NULLIF(SUM(Total_Transactions), 0), 2), 'N2') + '%' AS Overall_Success_Rate,
 
     -- Pending metrics
     FORMAT(SUM(Pending_Transactions), 'N0') AS Overall_Pending_Transactions,
     FORMAT(SUM(Pending_Amount), 'N2') AS Overall_Pending_Amount,
-    FORMAT(SUM(Pending_Transactions) * 1.0 / NULLIF(SUM(Total_Transactions), 0), 'P2') AS Overall_Pending_Rate,
+    FORMAT(ROUND(SUM(Pending_Transactions) * 100.0 / NULLIF(SUM(Total_Transactions), 0), 2), 'N2') + '%' AS Overall_Pending_Rate,
 
     -- Failed metrics
     FORMAT(SUM(Failed_Transactions), 'N0') AS Overall_Failed_Transactions,
     FORMAT(SUM(Failed_Amount), 'N2') AS Overall_Failed_Amount,
-    FORMAT(SUM(Failed_Transactions) * 1.0 / NULLIF(SUM(Total_Transactions), 0), 'P2') AS Overall_Failure_Rate
+    FORMAT(ROUND(SUM(Failed_Transactions) * 100.0 / NULLIF(SUM(Total_Transactions), 0), 2), 'N2') + '%' AS Overall_Failure_Rate
 
 FROM (
     SELECT * FROM TELCO_PUSH
@@ -122,66 +121,52 @@ FROM (
     SELECT * FROM EKash_transfer
 ) AS CombinedResults;
 
-            """,
-            'database': 'ESB_SERVICES'
+
+    """
+
+    try:
+        # Connect to the database
+        conn = pyodbc.connect(conn_str)
+        cursor = conn.cursor()
+
+        # Execute the query
+        cursor.execute(sql_query)
+
+        # Fetch the result
+        row = cursor.fetchone()
+
+        # Map the result to a dictionary
+        metrics = {
+            'Overall_Total_Transactions': row.Overall_Total_Transactions,
+            'Overall_Total_Amount': row.Overall_Total_Amount,
+            'Overall_Successful_Transactions': row.Overall_Successful_Transactions,
+            'Overall_Successful_Amount': row.Overall_Successful_Amount,
+            'Overall_Success_Rate': row.Overall_Success_Rate,
+            'Overall_Pending_Transactions': row.Overall_Pending_Transactions,
+            'Overall_Pending_Amount': row.Overall_Pending_Amount,
+            'Overall_Pending_Rate': row.Overall_Pending_Rate,
+            'Overall_Failed_Transactions': row.Overall_Failed_Transactions,
+            'Overall_Failed_Amount': row.Overall_Failed_Amount,
+            'Overall_Failure_Rate': row.Overall_Failure_Rate,
         }
-    }
 
-    # Initialize counters for overall metrics
-    total_success_transactions = 0
-    total_transactions = 0
-    total_completed_amount = 0.0
+        # Update the cache
+        overall_cache.update(metrics)
 
-    for service_name, config in services.items():
-        query = config['query']
-        database = config['database']
+        # Close the connection
+        cursor.close()
+        conn.close()
 
-        try:
-            print(f"Attempting to connect to {database} for service: {service_name}")
-            engine = create_engine(connections[database])
+        print("Fetched overall metrics and updated overall_cache.")
+    except Exception as e:
+        print(f"Error fetching overall metrics: {e}")
 
-            result = pd.read_sql(query, engine)
-            print(f"Fetched success rate and amount for {service_name}")
+def start_overall_metrics_updater(interval=300):
+    def run():
+        while True:
+            fetch_overall_metrics()
+            time.sleep(interval)  # Update every 5 minutes
 
-            success_rate = result['Success_Rate_Percentage'].iloc[0]
-            total_amount = result['Total_Amount_Last_7_Days'].iloc[0]
-            completed_transactions = result['Completed_Transactions'].iloc[0]
-            total_transactions_service = result['Total_Transactions'].iloc[0]
-
-            # Update cache for individual service
-            cache[service_name] = {
-                'success_rate': success_rate,
-                'completed_transactions': completed_transactions,
-                'moving_average_amount': total_amount
-            }
-
-            # Accumulate totals for all services
-            total_success_transactions += completed_transactions
-            total_transactions += total_transactions_service
-            total_completed_amount += total_amount
-
-        except Exception as e:
-            print(f"Error processing {service_name}: {e}")
-            continue  # Skip cache update if there's an error
-
-        print(f"Cache updated at: {time.ctime()} for {service_name} with success rate: {cache[service_name]['success_rate']}% and moving average amount: {cache[service_name]['moving_average_amount']}")
-
-    # Calculate overall success rate across all services
-    overall_success_rate = (total_success_transactions / total_transactions * 100) if total_transactions > 0 else 0
-
-    # Store overall metrics in cache
-    cache['all_services'] = {
-        'success_rate': overall_success_rate,
-        'total_completed_transactions': total_success_transactions,
-        'total_completed_amount': total_completed_amount
-    }
-
-    print(f"Overall success rate: {overall_success_rate}%, Total completed transactions: {total_success_transactions}, Total completed amount: {total_completed_amount}")
-
-schedule.every(1).minutes.do(load_data_to_cache)
-
-def start_cache_updater():
-    load_data_to_cache()
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
+    updater_thread = threading.Thread(target=run)
+    updater_thread.daemon = True
+    updater_thread.start()
