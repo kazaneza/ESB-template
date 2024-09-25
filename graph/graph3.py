@@ -8,24 +8,30 @@ import base64
 def create_graph_pending():
     fig, ax = plt.subplots()
 
+    # Plot data
     ax.plot([1, 2, 3, 4], [1, 4, 9, 16], color='white', linewidth=2.5)
 
+    # Set labels and styles
     ax.set_xlabel('X Axis', color='white')
     ax.set_ylabel('Y Axis', color='white')
-   
     ax.tick_params(axis='x', colors='white')
     ax.tick_params(axis='y', colors='white')
- 
     ax.spines['top'].set_color('none')
     ax.spines['right'].set_color('none')
- 
     ax.grid(color='white', linestyle='--', linewidth=0.5)
 
-    img = io.BytesIO()
-    plt.savefig(img, format='png', bbox_inches='tight', transparent=True)  
-    img.seek(0) 
-    graph_url_pending = base64.b64encode(img.getvalue()).decode()
-  
-    plt.close()
+    # Optional: Set background colors to match your dashboard theme
+    fig.patch.set_facecolor('#1F1F1F')  # Figure background color
+    ax.set_facecolor('#1F1F1F')         # Axes background color
 
+    # Save figure to a BytesIO object
+    img = io.BytesIO()
+    fig.savefig(img, format='png', bbox_inches='tight', transparent=True)  
+    img.seek(0) 
+    graph_url_pending = base64.b64encode(img.getvalue()).decode('utf-8')
+  
+    # Close the figure
+    plt.close(fig)
+
+    # Return the data URL
     return f"data:image/png;base64,{graph_url_pending}"

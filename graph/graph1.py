@@ -19,13 +19,14 @@ def create_graph_failure():
     ax.spines['top'].set_color('none')
     ax.spines['right'].set_color('none')
  
+    # Corrected line without the extra quote
     ax.grid(color='white', linestyle='--', linewidth=0.5)
 
     img = io.BytesIO()
-    plt.savefig(img, format='png', bbox_inches='tight', transparent=True)  
+    fig.savefig(img, format='png', bbox_inches='tight', transparent=True)  
     img.seek(0) 
-    graph_url_failure = base64.b64encode(img.getvalue()).decode()
+    graph_url_failure = base64.b64encode(img.getvalue()).decode('utf-8')
   
-    plt.close()
+    plt.close(fig)
 
     return f"data:image/png;base64,{graph_url_failure}"

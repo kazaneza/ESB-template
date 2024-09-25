@@ -272,8 +272,9 @@
               <div class="bg-gradient-primary shadow-primary border-radius-lg py-3 pe-1">
                 <div class="chart">
                   <div style="position: relative; height: 100%; width: 400px;">
-                    <img src="{{ create_graph_failure }}" alt="Graph" style="width: 92%; height: 80%; position: relative; top: -10px;">
+                    <img src="{{ graph_failure }}" alt="Graph" style="width: 92%; height: 80%; position: relative; top: -10px;">
                 </div>
+                
                 </div>
               </div>
             </div>
@@ -283,7 +284,7 @@
               <!-- Failure percentage with an icon -->
               <p class="text-sm d-flex align-items-center mb-1">
                 <i class="material-icons text-danger me-1">warning</i> 
-                10% Failure Transactions
+                Failure Transactions: <span class="font-weight-bold ms-1">10%</span>
               </p>
               
               <!-- Total count of failed transactions with a bold number -->
@@ -323,7 +324,7 @@
                 <div class="chart">
                   
                   <div style="position: relative; height: 100%; width: 400px;">
-                    <img src="{{ create_graph_success }}" alt="Graph" style="width: 92%; height: 80%; position: relative; top: -10px;">
+                    <img src="{{ graph_success }}" alt="Graph" style="width: 92%; height: 80%; position: relative; top: -10px;">
                 </div>
                 
                 
@@ -369,7 +370,7 @@
             <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
               <div class="bg-gradient-dark shadow-dark border-radius-lg py-3 pe-1">
                 <div style="position: relative; height: 100%; width: 400px;">
-                  <img src="{{ create_graph_pending }}" alt="Graph" style="width: 92%; height: 80%; position: relative; top: -10px;">
+                  <img src="{{ graph_pending }}" alt="Graph" style="width: 92%; height: 80%; position: relative; top: -10px;">
               </div>
               </div>
             </div>
