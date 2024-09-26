@@ -7,10 +7,10 @@ cache = {}
 moving_average_window = 7
  
 connections = {
-    'TELCOPUSHPULL': 'mssql+pyodbc://@lsttest/TELCOPUSHPULL?driver=ODBC+Driver+17+for+SQL+Server&trusted_connection=yes',
-    'RRAACCOUNTS': 'mssql+pyodbc://@lsttest/RRAACCOUNTS?driver=ODBC+Driver+17+for+SQL+Server&trusted_connection=yes',
-    'IREMBOGATEWAY': 'mssql+pyodbc://@lsttest/IREMBOGATEWAY?driver=ODBC+Driver+17+for+SQL+Server&trusted_connection=yes',
-    'ESB_SERVICES': 'mssql+pyodbc://@lsttest/ESB_SERVICES?driver=ODBC+Driver+17+for+SQL+Server&trusted_connection=yes'
+    'TELCOPUSHPULL': 'mssql+pyodbc://splunkpost:Splunk%40%26%2A1%21@10.103.34.23/TELCOPUSHPULL?driver=ODBC+Driver+17+for+SQL+Server',
+    'RRAACCOUNTS': 'mssql+pyodbc://splunkpost:Splunk%40%26%2A1%21@10.103.34.23/RRAACCOUNTS?driver=ODBC+Driver+17+for+SQL+Server',
+    'IREMBOGATEWAY': 'mssql+pyodbc://splunkpost:Splunk%40%26%2A1%21@10.103.34.23/IREMBOGATEWAY?driver=ODBC+Driver+17+for+SQL+Server',
+    'ESB_SERVICES': 'mssql+pyodbc://splunkpost:Splunk%40%26%2A1%21@10.103.34.23/ESB_SERVICES?driver=ODBC+Driver+17+for+SQL+Server'
 }
  
 def load_data_to_cache():
