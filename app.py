@@ -2,7 +2,7 @@ from flask import Flask, render_template, jsonify
 from utils import get_success_rates, start_datahub_thread
 from graphs import create_all_graphs
 
-# Import the new module
+# Import the new module for overall metrics
 from data.overall_datahub import overall_cache, start_overall_metrics_updater
 
 app = Flask(__name__)
@@ -38,7 +38,6 @@ def api_get_success_rates():
     success_rates = get_success_rates(services)
     return jsonify(success_rates)
 
-# **Add this new endpoint**
 @app.route('/api/overall_metrics', methods=['GET'])
 def api_get_overall_metrics():
     return jsonify(overall_cache)
