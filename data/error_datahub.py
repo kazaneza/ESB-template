@@ -25,7 +25,7 @@ SELECT
     CAST((CAST(Failure_Count AS DECIMAL(10,2)) / Total_Failures) * 100 AS DECIMAL(5,2)) AS Failure_Percentage
 FROM ErrorCounts
 ORDER BY Failure_Count DESC
-OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY;  -- Fetch the top 5 errors
+OFFSET 0 ROWS FETCH NEXT 100 ROWS ONLY;  -- Fetch the top 5 errors
 
     """
     
