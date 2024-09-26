@@ -18,16 +18,17 @@ def load_data_to_cache():
         'TELCO_PUSH_TRANS': {
             'query': """
                 WITH last_7_days AS (
-                    SELECT *
-                    FROM TELCO_PUSH_TRANS
-                    WHERE TRY_CONVERT(DATETIMEOFFSET, TRANS_DT, 126) >= DATEADD(DAY, -150, SYSDATETIMEOFFSET())
-                )
-                SELECT
-                    COUNT(*) AS Total_Transactions,
-                    SUM(CASE WHEN CBS_STATUS = 'SUCCESS' THEN 1 ELSE 0 END) AS Completed_Transactions,
-                    ROUND((SUM(CASE WHEN CBS_STATUS = 'SUCCESS' THEN 1 ELSE 0 END) * 100.0) / COUNT(*), 2) AS Success_Rate_Percentage,
-                    ROUND(SUM(AMOUNT), 2) AS Total_Amount_Last_7_Days
-                FROM last_7_days;
+    SELECT *
+    FROM TELCO_PUSH_TRANS
+    WHERE TRY_CONVERT(DATETIMEOFFSET, TRANS_DT, 126) >= CAST(SYSDATETIMEOFFSET() AS DATE)
+)
+SELECT
+    COUNT(*) AS Total_Transactions,
+    SUM(CASE WHEN CBS_STATUS = 'SUCCESS' THEN 1 ELSE 0 END) AS Completed_Transactions,
+    ROUND((SUM(CASE WHEN CBS_STATUS = 'SUCCESS' THEN 1 ELSE 0 END) * 100.0) / COUNT(*), 2) AS Success_Rate_Percentage,
+    ROUND(SUM(AMOUNT), 2) AS Total_Amount_Last_7_Days
+FROM last_7_days;
+
             """,
             'database': 'TELCOPUSHPULL'
         },
@@ -36,7 +37,7 @@ def load_data_to_cache():
                 WITH last_7_days AS (
                     SELECT *
                     FROM TELCO_PULL_TRANS
-                    WHERE TRY_CONVERT(DATETIMEOFFSET, TRANS_DT, 126) >= DATEADD(DAY, -150, SYSDATETIMEOFFSET())
+                    WHERE TRY_CONVERT(DATETIMEOFFSET, TRANS_DT, 126) >= CAST(SYSDATETIMEOFFSET() AS DATE)
                 )
                 SELECT
                     COUNT(*) AS Total_Transactions,
@@ -52,7 +53,7 @@ def load_data_to_cache():
                 WITH last_7_days AS (
                     SELECT *
                     FROM TAX_PAYMENT_TRNX_MTN
-                    WHERE dbDateTime >= DATEADD(DAY, -150, GETDATE())
+                    WHERE dbDateTime >= CAST(GETDATE() AS DATE)
                 )
                 SELECT
                     COUNT(*) AS Total_Transactions,
@@ -68,7 +69,7 @@ def load_data_to_cache():
                 WITH last_7_days AS (
                     SELECT *
                     FROM TELCO_IREMBO_TRANS
-                    WHERE TRY_CONVERT(DATETIMEOFFSET, PAYMENT_DT, 126) >= DATEADD(DAY, -150, SYSDATETIMEOFFSET())
+                    WHERE TRY_CONVERT(DATETIMEOFFSET, PAYMENT_DT, 126) >= CAST(SYSDATETIMEOFFSET() AS DATE)
                 )
                 SELECT
                     COUNT(*) AS Total_Transactions,
@@ -84,7 +85,7 @@ def load_data_to_cache():
                 WITH last_7_days AS (
                     SELECT *
                     FROM AIRTEL_IREMBO_TRANS
-                    WHERE TRY_CONVERT(DATETIMEOFFSET, PAYMENT_DT, 126) >= DATEADD(DAY, -150, SYSDATETIMEOFFSET())
+                    WHERE TRY_CONVERT(DATETIMEOFFSET, PAYMENT_DT, 126) >= CAST(SYSDATETIMEOFFSET() AS DATE)
                 )
                 SELECT
                     COUNT(*) AS Total_Transactions,
@@ -100,7 +101,7 @@ def load_data_to_cache():
                 WITH last_7_days AS (
                     SELECT *
                     FROM EKash_transfer
-                    WHERE TRY_CONVERT(DATETIMEOFFSET, createdAt, 126) >= DATEADD(DAY, -150, SYSDATETIMEOFFSET())
+                    WHERE TRY_CONVERT(DATETIMEOFFSET, createdAt, 126) >= CAST(SYSDATETIMEOFFSET() AS DATE)
                 )
                 SELECT
                     COUNT(*) AS Total_Transactions,

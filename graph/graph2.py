@@ -95,40 +95,32 @@ WHERE RN > 3  -- Exclude the first 3 hours
     """
 
     try:
-        # Connect to the SQL Server
         with pyodbc.connect(conn_str) as conn:
-            # Execute the SQL query and fetch data into a pandas DataFrame
             df = pd.read_sql_query(query, conn)
     except pyodbc.Error as e:
         print("Error connecting to SQL Server:", e)
         return None
 
-    # Check if data is retrieved
     if df.empty:
         print("No data retrieved from the database.")
         return None
-
-    # Ensure the data is sorted by 'Transaction_Hour'
+    df['Transaction_Hour'] = pd.to_datetime(df['Transaction_Hour'], format='%I %p')
+    
     df = df.sort_values(by='Transaction_Hour')
 
-    # Reset index to ensure it's in order
     df = df.reset_index(drop=True)
-
-    # Assign a sequential x value based on the sorted data
+    df['Transaction_Hour'] = df['Transaction_Hour'].dt.strftime('%I %p')
     df['x_seq'] = df.index
 
-    # y-values are the moving average
     x = df['x_seq'].values
     y = df['Moving_Average_Success'].values
 
-    # Check if there are enough points to perform smoothing
     if len(x) < 4:
         print("Not enough data points to perform smoothing.")
         smooth_y = y
         x_smooth = x
-        x_labels = df['Transaction_Hour'].values  # Use the string values directly
+        x_labels = df['Transaction_Hour'].values
     else:
-        # Create a spline of degree 3 (cubic) for smoothing
         try:
             spline = make_interp_spline(x, y, k=3)
             x_smooth = np.linspace(x.min(), x.max(), 300)
@@ -138,14 +130,12 @@ WHERE RN > 3  -- Exclude the first 3 hours
             smooth_y = y
             x_smooth = x
 
-        # Use original 'Transaction_Hour' values directly as they are already strings
         x_labels = df['Transaction_Hour'].values
 
     # Plotting
-    fig, ax = plt.subplots(figsize=(10, 6))  # Adjust the figure size as needed
+    fig, ax = plt.subplots(figsize=(10, 6))  
 
     if len(x) < 4:
-        # If not enough points for smoothing, plot the original moving average
         ax.plot(
             df['Transaction_Hour'], 
             df['Moving_Average_Success'], 
@@ -153,7 +143,6 @@ WHERE RN > 3  -- Exclude the first 3 hours
             linewidth=2.5
         )
     else:
-        # Plot the smoothed moving average
         ax.plot(
             x_smooth, 
             smooth_y, 
@@ -161,48 +150,37 @@ WHERE RN > 3  -- Exclude the first 3 hours
             linewidth=2.5
         )
 
-    # Set labels with white color
     ax.set_xlabel('Transaction Hour', color='white')
     ax.set_ylabel('Moving Average of Success', color='white')
     ax.set_title('Hourly Moving Average of Successful Transactions', color='white')
 
-    # Customize tick parameters
     ax.tick_params(axis='x', colors='white')
     ax.tick_params(axis='y', colors='white')
 
-    # Remove top and right spines, set left and bottom spines to white
     ax.spines['top'].set_color('none')
     ax.spines['right'].set_color('none')
     ax.spines['left'].set_color('white')
     ax.spines['bottom'].set_color('white')
 
-    # Set grid with white dashed lines
     ax.grid(color='white', linestyle='--', linewidth=0.5)
 
-    # Set background color to transparent
     fig.patch.set_alpha(0)
     ax.patch.set_alpha(0)
 
-    # Set x-axis labels
     if len(x) >= 4:
-        # For smoothed plot, set x ticks to original positions
         ax.set_xticks(x)
         ax.set_xticklabels(x_labels, rotation=45, ha='right', color='white')
     else:
         plt.setp(ax.get_xticklabels(), rotation=45, ha='right', color='white')
 
-    # Adjust layout to prevent clipping of tick-labels
     plt.tight_layout()
 
-    # Save the figure to a BytesIO object
     img = io.BytesIO()
     fig.savefig(img, format='png', bbox_inches='tight', transparent=True)
     img.seek(0) 
 
-    # Encode the image in base64
     graph_url_success = base64.b64encode(img.getvalue()).decode('utf-8')
   
-    # Close the figure to free memory
     plt.close(fig)
 
     return f"data:image/png;base64,{graph_url_success}"

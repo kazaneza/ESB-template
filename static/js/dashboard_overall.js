@@ -1,4 +1,5 @@
 // Function to fetch and update Success Rates
+// Function to fetch and update Success Rates
 async function fetchSuccessRates() {
     try {
         const response = await fetch('/api/success_rates');
@@ -16,19 +17,34 @@ async function fetchSuccessRates() {
         services.forEach(service => {
             const successRateElement = document.getElementById(`${service}-success-rate`);
             const movingAverageElement = document.getElementById(`${service}-moving-average`);
-          
+        
             if (successRateElement) {
-                successRateElement.innerText = data[service].success_rate + '%';
+                // Set to 0 if the success_rate is null or undefined
+                const successRate = data[service].success_rate != null ? data[service].success_rate : 0;
+                successRateElement.innerText = successRate + '%';
             }
-
+        
             if (movingAverageElement) {
-                movingAverageElement.innerText = data[service].moving_average_amount;
+                // Set to 0 if the moving_average_amount is null or undefined
+                let movingAverage = data[service].moving_average_amount != null ? data[service].moving_average_amount : 0;
+
+                // Apply thousand separator formatting
+                if (typeof movingAverage === 'number') {
+                    movingAverage = movingAverage.toLocaleString(undefined, { 
+                        minimumFractionDigits: 2, 
+                        maximumFractionDigits: 2 
+                    });
+                }
+
+                movingAverageElement.innerText = movingAverage;
             }
         });
+        
     } catch (error) {
         console.error('Error fetching success rates:', error);
     }
 }
+
 
 // Function to fetch and update Overall Metrics
 async function fetchOverallMetrics() {
@@ -65,7 +81,7 @@ async function fetchOverallMetrics() {
 
                 // Append '%' for rate metrics
                 if (key.includes('Rate')) {
-                    value = value + '%';
+                    value = value ;
                 }
 
                 element.innerText = value;
