@@ -1,9 +1,8 @@
 from flask import Flask, render_template, jsonify
 from utils import get_success_rates, start_datahub_thread
 from graphs import create_all_graphs
-
-# Import the new module for overall metrics
 from data.overall_datahub import overall_cache, start_overall_metrics_updater
+from data.error_datahub import get_top_5_errors
 
 app = Flask(__name__)
 
@@ -24,14 +23,22 @@ services = [
 def index():
     graphs = create_all_graphs()
     success_rates = get_success_rates(services)
-    overall_metrics = overall_cache  # Get the overall metrics
+    overall_metrics = overall_cache
+    top_errors = get_top_5_errors()
 
     return render_template(
         'dashboard.html',
         success_rates=success_rates,
         overall_metrics=overall_metrics,
+        top_errors=top_errors,
         **graphs
     )
+
+@app.route('/api/top_errors', methods=['GET'])
+def api_get_top_errors():
+    top_errors = get_top_5_errors()
+    return jsonify(top_errors)
+
 
 @app.route('/api/success_rates', methods=['GET'])
 def api_get_success_rates():
