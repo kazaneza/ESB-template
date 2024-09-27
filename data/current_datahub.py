@@ -16,7 +16,7 @@ def fetch_latest_transactions():
     )
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT TOP 10 AMOUNT, TELCO, CBS_STATUS, TRANS_DT
+        SELECT TOP 6 AMOUNT, TELCO, CBS_STATUS, TRANS_DT
         FROM [TELCOPUSHPULL].[dbo].[TELCO_PULL_TRANS]
         ORDER BY TRANS_DT DESC
     """)

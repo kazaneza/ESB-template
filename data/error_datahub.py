@@ -5,27 +5,35 @@ def get_top_5_errors():
     cursor = conn.cursor()
 
     query = """
-    WITH ErrorCounts AS (
+     WITH ErrorCounts AS (
     SELECT 
         'MTN Pull' AS Service,
-        CBS_ERROR_MESSAGE AS Error_Message,
+        CASE 
+            WHEN CBS_ERROR_MESSAGE LIKE '%Account number Not found%' THEN 'Wrong Account Number'
+            ELSE CBS_ERROR_MESSAGE
+        END AS CBS_ERROR,
         COUNT(*) AS Failure_Count,
         (SELECT COUNT(*) 
          FROM [TELCOPUSHPULL].[dbo].[TELCO_PULL_TRANS]
          WHERE CBS_STATUS NOT IN ('COMPLETED', 'PENDING')) AS Total_Failures
     FROM [TELCOPUSHPULL].[dbo].[TELCO_PULL_TRANS]
-    WHERE CBS_STATUS NOT IN ('COMPLETED', 'PENDING')  -- Filter for failed transactions
-      AND CBS_ERROR_MESSAGE IS NOT NULL  -- Exclude rows where CBS_ERROR_MESSAGE is NULL
-    GROUP BY CBS_ERROR_MESSAGE
+    WHERE CBS_STATUS NOT IN ('COMPLETED', 'PENDING')  
+      AND CBS_ERROR_MESSAGE IS NOT NULL  
+    GROUP BY 
+        CASE 
+            WHEN CBS_ERROR_MESSAGE LIKE '%Account number Not found%' THEN 'Wrong Account Number'
+            ELSE CBS_ERROR_MESSAGE
+        END
 )
 SELECT 
-    Error_Message,
+    CBS_ERROR AS Error_Message,
     Service,
     Failure_Count,
     CAST((CAST(Failure_Count AS DECIMAL(10,2)) / Total_Failures) * 100 AS DECIMAL(5,2)) AS Failure_Percentage
 FROM ErrorCounts
 ORDER BY Failure_Count DESC
-OFFSET 0 ROWS FETCH NEXT 100 ROWS ONLY;  -- Fetch the top 5 errors
+OFFSET 0 ROWS FETCH NEXT 100 ROWS ONLY;
+
 
     """
     
