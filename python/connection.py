@@ -11,10 +11,10 @@ logging.basicConfig(
 # Connection string
 conn_str = (
     'DRIVER={ODBC Driver 17 for SQL Server};'
-    'SERVER=10.103.34.23;'
-    'DATABASE=TELCOPUSHPULL;'
-    'UID=splunkpost;'
-    'PWD={Splunk@&*1!};'
+    'SERVER=lsttest;'
+    'DATABASE=RRAACCOUNTS;'
+    'UID=dm_monitoring;'
+    'PWD=123DMMONITORING;'
     'Encrypt=Yes;'
     'TrustServerCertificate=Yes;'
 )

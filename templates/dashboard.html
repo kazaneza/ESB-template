@@ -492,55 +492,8 @@
             </div>
             
             <div class="card-body p-3">
-              <div class="timeline timeline-one-side">
-                <div class="timeline-block mb-3">
-                  <span class="timeline-step">
-                    <i class="material-icons text-success text-gradient">check_circle</i>
-                  </span>
-                  <div class="timeline-content">
-                    <h6 class="text-dark text-sm font-weight-bold mb-0">800.00, MTN PULL</h6>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">24 SEP 10:40 PM</p>
-                  </div>
-                </div>
-                <div class="timeline-block mb-3">
-                  <span class="timeline-step">
-                    <i class="material-icons text-danger text-gradient">error</i>
-                  </span>
-                  <div class="timeline-content">
-                    <h6 class="text-dark text-sm font-weight-bold mb-0">10000.00 MTN PULL</h6>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">Account has insufficient funds.</p>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">24 SEP 10:40 PM</p>
-                  </div>
-                </div>
-                <div class="timeline-block mb-3">
-                  <span class="timeline-step">
-                    <i class="material-icons text-info text-gradient">schedule</i>
-                  </span>
-                  <div class="timeline-content">
-                    <h6 class="text-dark text-sm font-weight-bold mb-0">10000.00 IREMBOL</h6>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">24 SEP 10:40 PM</p>
-                  </div>
-                </div>
-                <div class="timeline-block mb-3">
-                  <span class="timeline-step">
-                    <i class="material-icons text-danger text-gradient">error</i>
-                  </span>
-                  <div class="timeline-content">
-                    <h6 class="text-dark text-sm font-weight-bold mb-0">10000.00 MTN PULL</h6>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">Account has insufficient funds.</p>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">24 SEP 10:40 PM</p>
-                  </div>
-                </div>
-                <div class="timeline-block mb-3">
-                  <span class="timeline-step">
-                    <i class="material-icons text-danger text-gradient">error</i>
-                  </span>
-                  <div class="timeline-content">
-                    <h6 class="text-dark text-sm font-weight-bold mb-0">10000.00 MTN PULL</h6>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">Account has insufficient funds.</p>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">24 SEP 10:40 PM</p>
-                  </div>
-                </div>
+              <div class="timeline timeline-one-side" id="latestTransactions">
+                
                 
               </div>
             </div>
@@ -1024,7 +977,65 @@
     updateErrorTable();
 </script>
 
+<script>
+  function updateTransactions() {
+    fetch('/api/latest_transactions')
+      .then(response => response.json())
+      .then(data => {
+        const transactionsContainer = document.getElementById('latestTransactions');
+        transactionsContainer.innerHTML = ''; // Clear existing transactions
 
+        data.forEach(transaction => {
+          let [amount, telco, status, transDate] = transaction;
+
+          // Convert amount to a number
+          amount = Number(amount);
+
+          // Check if conversion was successful
+          if (isNaN(amount)) {
+            console.error(`Invalid amount value: ${amount}`);
+            amount = 0; // Default to 0 or handle as appropriate
+          }
+
+          const formattedDate = new Date(transDate).toLocaleString();
+
+          let iconClass, icon;
+          if (status === 'COMPLETED') {
+            iconClass = 'text-success';
+            icon = 'check_circle';
+          } else if (status === 'FAILED') {
+            iconClass = 'text-danger';
+            icon = 'error';
+          } else {
+            iconClass = 'text-info';
+            icon = 'schedule';
+          }
+
+          const transactionHtml = `
+            <div class="timeline-block mb-3">
+              <span class="timeline-step">
+                <i class="material-icons ${iconClass} text-gradient">${icon}</i>
+              </span>
+              <div class="timeline-content">
+                <h6 class="text-dark text-sm font-weight-bold mb-0">${amount.toFixed(2)} ${telco}</h6>
+                <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">${status}</p>
+                <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">${formattedDate}</p>
+              </div>
+            </div>
+          `;
+
+          transactionsContainer.innerHTML += transactionHtml;
+        });
+      })
+      .catch(error => console.error('Error fetching latest transactions:', error));
+  }
+
+  // Update transactions every 5 seconds
+  setInterval(updateTransactions, 5000);
+
+  // Initial update
+  updateTransactions();
+</script>
 
 </body>
 
