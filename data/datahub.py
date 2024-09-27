@@ -84,14 +84,14 @@ FROM last_7_days;
             'query': """
                 WITH last_7_days AS (
                     SELECT *
-                    FROM AIRTEL_IREMBO_TRANS
-                    WHERE TRY_CONVERT(DATETIMEOFFSET, PAYMENT_DT, 126) >= CAST(SYSDATETIMEOFFSET() AS DATE)
+                    FROM [TELCOPUSHPULL].[dbo].[TELCO_PUSH_TRANS]
+                    WHERE TRY_CONVERT(DATETIMEOFFSET, TRANS_DT, 126) >= CAST(SYSDATETIMEOFFSET() AS DATE) AND TELCO ='AIRTEL'
                 )
                 SELECT
                     COUNT(*) AS Total_Transactions,
-                    SUM(CASE WHEN PAYMENT_STATUS = 'COMPLETED' THEN 1 ELSE 0 END) AS Completed_Transactions,
-                    ROUND((SUM(CASE WHEN PAYMENT_STATUS = 'COMPLETED' THEN 1 ELSE 0 END) * 100.0) / COUNT(*),2) AS Success_Rate_Percentage,
-                    SUM(TRY_CONVERT(DECIMAL(18, 2), PAID_AMT)) AS Total_Amount_Last_7_Days
+                    SUM(CASE WHEN CBS_STATUS = 'SUCCESS' THEN 1 ELSE 0 END) AS Completed_Transactions,
+                    ROUND((SUM(CASE WHEN CBS_STATUS = 'SUCCESS' THEN 1 ELSE 0 END) * 100.0) / COUNT(*),2) AS Success_Rate_Percentage,
+                    SUM(TRY_CONVERT(DECIMAL(18, 2), AMOUNT)) AS Total_Amount_Last_7_Days
                 FROM last_7_days;
             """,
             'database': 'IREMBOGATEWAY'
