@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rwanda Branch Map</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+</head>
+<body>
+    <div id="map" style="height: 600px;"></div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // Initialize the map and set the view to Rwanda's coordinates
+        var map = L.map('map', {
+            maxBounds: [
+                [-2.8409, 28.8618],  // South-West corner of Rwanda
+                [-1.0475, 30.8996]   // North-East corner of Rwanda
+            ],
+            maxBoundsViscosity: 1.0  // Restricts panning to the bounds
+        }).setView([-1.9403, 29.8739], 8);
+
+        // Load map tiles from OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            minZoom: 7,  // Restrict minimum zoom level to keep focus on Rwanda
+        }).addTo(map);
+
+        // Sample branch data with coordinates and information
+        var branches = [
+            {
+                name: "Branch 1",
+                lat: -1.9403,
+                lng: 29.8739,
+                info: "Branch 1 - Kigali"
+            },
+            {
+                name: "Branch 2",
+                lat: -2.0769,
+                lng: 30.0563,
+                info: "Branch 2 - Butare"
+            }
+            // Add more branches here
+        ];
+
+        // Add markers for each branch
+        branches.forEach(function(branch) {
+            var marker = L.marker([branch.lat, branch.lng]).addTo(map);
+            marker.bindPopup(`<b>${branch.name}</b><br>${branch.info}`);
+        });
+    </script>
+</body>
+</html>
