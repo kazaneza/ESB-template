@@ -1,53 +1,75 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>Rwanda Branch Map</title>
-    <meta charset="utf-8" />
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        /* Map Container */
+        #map {
+            height: 600px;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
-    <div id="map" style="height: 600px;"></div>
+
+    <h1 style="text-align: center;">Rwanda Branch Locations</h1>
+
+    <!-- Map container -->
+    <div id="map"></div>
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script>
-        // Initialize the map and set the view to Rwanda's coordinates
-        var map = L.map('map', {
-            maxBounds: [
-                [-2.8409, 28.8618],  // South-West corner of Rwanda
-                [-1.0475, 30.8996]   // North-East corner of Rwanda
-            ],
-            maxBoundsViscosity: 1.0  // Restricts panning to the bounds
-        }).setView([-1.9403, 29.8739], 8);
+        // Initialize the map starting from the global view
+        var map = L.map('map').setView([20, 0], 2);  // Set view to a global coordinate and zoom level 2
 
-        // Load map tiles from OpenStreetMap
+        // Load default OpenStreetMap tiles
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 18,
-            minZoom: 7,  // Restrict minimum zoom level to keep focus on Rwanda
+            minZoom: 2,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        // Sample branch data with coordinates and information
+        // Define branch data
         var branches = [
             {
-                name: "Branch 1",
+                name: "Branch 1 - Kigali",
                 lat: -1.9403,
                 lng: 29.8739,
                 info: "Branch 1 - Kigali"
             },
             {
-                name: "Branch 2",
+                name: "Branch 2 - Butare",
                 lat: -2.0769,
                 lng: 30.0563,
                 info: "Branch 2 - Butare"
             }
-            // Add more branches here
         ];
 
-        // Add markers for each branch
-        branches.forEach(function(branch) {
-            var marker = L.marker([branch.lat, branch.lng]).addTo(map);
-            marker.bindPopup(`<b>${branch.name}</b><br>${branch.info}`);
-        });
+        // Function to animate the map zooming in from a global view to Rwanda
+        function zoomToRwanda() {
+            map.flyTo([10, 20], 3, { duration: 2 });  // Zoom in to Africa level
+            setTimeout(function() {
+                map.flyTo([0, 30], 5, { duration: 2 });  // Zoom in to East Africa level
+                setTimeout(function() {
+                    map.flyTo([-1.9403, 29.8739], 8, { duration: 2 });  // Finally zoom into Rwanda
+                }, 2500);  // Wait for 2.5 seconds before zooming further
+            }, 2500);  // Wait for 2.5 seconds before zooming further
+        }
+
+        // Call the zoom animation function when the page loads
+        zoomToRwanda();
+
+        // Add branch markers after zooming animation is complete
+        setTimeout(function() {
+            branches.forEach(function(branch) {
+                var marker = L.marker([branch.lat, branch.lng]).addTo(map);
+                marker.bindPopup(`<b>${branch.name}</b><br>${branch.info}`);
+            });
+        }, 7000);  // Wait 7 seconds to start adding markers
     </script>
+
 </body>
 </html>
