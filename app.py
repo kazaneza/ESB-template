@@ -55,5 +55,9 @@ def api_get_success_rates():
 def api_get_overall_metrics():
     return jsonify(overall_cache)
 
+@app.route('/atm.html')
+def atm():
+    return render_template('atm.html')
+
 if __name__ == '__main__':
     app.run(debug=True)

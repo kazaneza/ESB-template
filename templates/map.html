@@ -1,38 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Rwanda Branch Map</title>
+    <title>Rwanda Branch Map Animation</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <style>
-        /* Map Container */
+        /* Basic styling for the map */
         #map {
             height: 600px;
             width: 100%;
+        }
+
+        /* Optional styling for the title */
+        h1 {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            margin: 20px 0;
         }
     </style>
 </head>
 <body>
 
-    <h1 style="text-align: center;">Rwanda Branch Locations</h1>
+    <!-- Map Title -->
+    <h1>Rwanda Branch Locations</h1>
 
-    <!-- Map container -->
+    <!-- Map Container -->
     <div id="map"></div>
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script>
-        // Initialize the map starting from the global view
-        var map = L.map('map').setView([20, 0], 2);  // Set view to a global coordinate and zoom level 2
+        // Initialize the map with a global view
+        var map = L.map('map', {
+            zoomSnap: 0.5
+        }).setView([20.0, 0.0], 2);  // Start at a global view (latitude 20, longitude 0)
 
         // Load default OpenStreetMap tiles
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 18,
-            minZoom: 2,
+            minZoom: 2,  // Set minimum zoom to cover the whole world
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        // Define branch data
+        // Sample branch data with coordinates and information
         var branches = [
             {
                 name: "Branch 1 - Kigali",
@@ -48,28 +58,44 @@
             }
         ];
 
-        // Function to animate the map zooming in from a global view to Rwanda
-        function zoomToRwanda() {
-            map.flyTo([10, 20], 3, { duration: 2 });  // Zoom in to Africa level
-            setTimeout(function() {
-                map.flyTo([0, 30], 5, { duration: 2 });  // Zoom in to East Africa level
+        // Add markers for each branch with popups
+        branches.forEach(function(branch) {
+            var marker = L.marker([branch.lat, branch.lng]).addTo(map);
+            marker.bindPopup(`<b>${branch.name}</b><br>${branch.info}`);
+        });
+
+        // Define the zoom sequence: [zoomLevel, [latitude, longitude]]
+        var zoomSequence = [
+            [2, [20.0, 0.0]],        // Global view
+            [3, [10.0, 20.0]],       // Focus on Africa
+            [4, [0.0, 30.0]],        // Narrow down to East Africa
+            [5, [-1.5, 29.0]],       // Closer to Rwanda region
+            [8, [-1.9403, 29.8739]]  // Final view on Rwanda
+        ];
+
+        // Perform the animation step-by-step
+        function animateZoom(stepIndex) {
+            if (stepIndex < zoomSequence.length) {
+                var zoomLevel = zoomSequence[stepIndex][0];
+                var center = zoomSequence[stepIndex][1];
+
+                // Set the view with animation
+                map.flyTo(center, zoomLevel, {
+                    animate: true,
+                    duration: 1.5   // Duration of each step in seconds
+                });
+
+                // Move to the next step after a delay
                 setTimeout(function() {
-                    map.flyTo([-1.9403, 29.8739], 8, { duration: 2 });  // Finally zoom into Rwanda
-                }, 2500);  // Wait for 2.5 seconds before zooming further
-            }, 2500);  // Wait for 2.5 seconds before zooming further
+                    animateZoom(stepIndex + 1);
+                }, 1500);  // Match the duration of flyTo to ensure smooth transition
+            }
         }
 
-        // Call the zoom animation function when the page loads
-        zoomToRwanda();
-
-        // Add branch markers after zooming animation is complete
+        // Start the zoom animation after a short delay
         setTimeout(function() {
-            branches.forEach(function(branch) {
-                var marker = L.marker([branch.lat, branch.lng]).addTo(map);
-                marker.bindPopup(`<b>${branch.name}</b><br>${branch.info}`);
-            });
-        }, 7000);  // Wait 7 seconds to start adding markers
+            animateZoom(0);  // Start from the first step in the sequence
+        }, 1000);  // Start 1 second after the page loads
     </script>
-
 </body>
 </html>
