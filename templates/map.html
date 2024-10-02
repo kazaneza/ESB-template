@@ -8,8 +8,8 @@
     <style>
         /* Basic styling for the map */
         #map {
-            height: 600px;
-            width: 100%;
+            height: 60vh;
+            width: 80vw;
         }
 
         /* Optional styling for the title */
@@ -37,7 +37,7 @@
 
         // Load default OpenStreetMap tiles
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 18,
+            maxZoom: 100,
             minZoom: 2,  // Set minimum zoom to cover the whole world
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);

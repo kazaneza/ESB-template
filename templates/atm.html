@@ -30,6 +30,21 @@
   <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
 
 <meta http-equiv="refresh" content="1800">
+<style>
+  /* Basic styling for the map */
+  #map {
+      height: 80vh;
+      width: 100vw;
+      display: block;
+  }
+
+  /* Optional styling for the title */
+  h1 {
+      text-align: center;
+      font-family: Arial, sans-serif;
+      margin: 20px 0;
+  }
+</style>
 
 </head>
 
@@ -102,8 +117,12 @@
   
     
     <!-- End Navbar -->
-   
-         
+   <!-- Map Title -->
+   <h1>Rwanda Branch Locations</h1>
+
+   <!-- Map Container -->
+   <div id="map"></div>
+    <!--End of main body-->
       <footer class="footer py-4  ">
         <div class="container-fluid">
           <div class="row align-items-center justify-content-lg-between">
@@ -197,7 +216,75 @@
   <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
   <script src="/static/js/dashboard.js"></script>
   <script src="/static/js/dashboard_overall.js"></script>
-  
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // Initialize the map with a global view
+        var map = L.map('map', {
+            zoomSnap: 0.5
+        }).setView([20.0, 0.0], 2);  // Start at a global view (latitude 20, longitude 0)
+
+        // Load default OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            minZoom: 2,  // Set minimum zoom to cover the whole world
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Sample branch data with coordinates and information
+        var branches = [
+            {
+                name: "Branch 1 - Kigali",
+                lat: -1.9403,
+                lng: 29.8739,
+                info: "Branch 1 - Kigali"
+            },
+            {
+                name: "Branch 2 - Butare",
+                lat: -2.0769,
+                lng: 30.0563,
+                info: "Branch 2 - Butare"
+            }
+        ];
+
+        // Add markers for each branch with popups
+        branches.forEach(function(branch) {
+            var marker = L.marker([branch.lat, branch.lng]).addTo(map);
+            marker.bindPopup(`<b>${branch.name}</b><br>${branch.info}`);
+        });
+
+        // Define the zoom sequence: [zoomLevel, [latitude, longitude]]
+        var zoomSequence = [
+            [2, [20.0, 0.0]],        // Global view
+            [3, [10.0, 20.0]],       // Focus on Africa
+            [4, [0.0, 30.0]],        // Narrow down to East Africa
+            [5, [-1.5, 29.0]],       // Closer to Rwanda region
+            [8, [-1.9403, 29.8739]]  // Final view on Rwanda
+        ];
+
+        // Perform the animation step-by-step
+        function animateZoom(stepIndex) {
+            if (stepIndex < zoomSequence.length) {
+                var zoomLevel = zoomSequence[stepIndex][0];
+                var center = zoomSequence[stepIndex][1];
+
+                // Set the view with animation
+                map.flyTo(center, zoomLevel, {
+                    animate: true,
+                    duration: 1.5   // Duration of each step in seconds
+                });
+
+                // Move to the next step after a delay
+                setTimeout(function() {
+                    animateZoom(stepIndex + 1);
+                }, 1500);  // Match the duration of flyTo to ensure smooth transition
+            }
+        }
+
+        // Start the zoom animation after a short delay
+        setTimeout(function() {
+            animateZoom(0);  // Start from the first step in the sequence
+        }, 1000);  // Start 1 second after the page loads
+    </script>
 
 </body>
 
