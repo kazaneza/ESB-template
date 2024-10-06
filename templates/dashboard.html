@@ -104,17 +104,19 @@
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
                    data-bs-toggle="dropdown" aria-expanded="false">
-                  TODAY
+                  Today
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                  <li><a class="dropdown-item" href="#">Last 5 minutes</a></li>
-                  <li><a class="dropdown-item" href="#">Last 30 minutes</a></li>
-                  <li><a class="dropdown-item" href="#">Last 1 hour</a></li>
-                  <li><a class="dropdown-item" href="#">Last 24 hours</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="Last 5 minutes">Last 5 minutes</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="Last 30 minutes">Last 30 minutes</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="Last 1 hour">Last 1 hour</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="Last 24 hours">Last 24 hours</a></li>
+                  <li><a class="dropdown-item" href="#" data-value="Today">Today</a></li>
                 </ul>
               </li>
             </ul>
           </div>
+          
       </div>
   </nav>
   
@@ -758,6 +760,37 @@
   // Initial update
   updateTransactions();
 </script>
+
+<script>
+  // Wait for the DOM to fully load
+  document.addEventListener('DOMContentLoaded', function () {
+    // Get the dropdown toggle element
+    var dropdownToggle = document.getElementById('navbarDropdownMenuLink');
+
+    // Get all dropdown items
+    var dropdownItems = document.querySelectorAll('.dropdown-menu .dropdown-item');
+
+    // Loop through each item and add a click event listener
+    dropdownItems.forEach(function (item) {
+      item.addEventListener('click', function (e) {
+        e.preventDefault(); // Prevent the default link behavior
+
+        // Get the text content or data-value of the clicked item
+        var selectedText = this.getAttribute('data-value') || this.textContent;
+
+        // Update the dropdown toggle text
+        dropdownToggle.textContent = selectedText;
+
+        // Close the dropdown menu (optional)
+        var dropdown = bootstrap.Dropdown.getOrCreateInstance(dropdownToggle);
+        dropdown.hide();
+
+        // Optionally, you can perform additional actions here
+      });
+    });
+  });
+</script>
+
 
 </body>
 
