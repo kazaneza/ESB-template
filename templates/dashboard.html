@@ -28,51 +28,6 @@
   <!-- Nepcha Analytics (nepcha.com) -->
   <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
   <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
-  <style>
-    /* Customizing the dropdown toggle button */
-    .nav-link.dropdown-toggle {
-        background-color: #343a40; /* Dark background */
-        color: white;              /* White text */
-        padding: 10px 15px;        /* Custom padding */
-        border-radius: 5px;        /* Rounded corners */
-    }
-
-    /* Hover effect for the dropdown toggle */
-    .nav-link.dropdown-toggle:hover {
-        background-color: #495057; /* Lighter dark shade */
-        color: #f8f9fa;            /* Slightly lighter text */
-    }
-
-    /* Customizing the dropdown menu */
-    .dropdown-menu {
-        background-color: #6c757d; /* Custom background color */
-        border-radius: 8px;        /* Rounded corners */
-        padding: 10px;             /* Padding inside the dropdown */
-        transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-    }
-
-    /* Customizing dropdown items */
-    .dropdown-item {
-        color: #ffffff;            /* White text */
-    }
-
-    /* Hover effect for dropdown items */
-    .dropdown-item:hover {
-        background-color: #495057; /* Darker background on hover */
-        color: #f8f9fa;            /* Light text on hover */
-    }
-
-    /* Customizing the "Custom Range" item */
-    .dropdown-item:last-child {
-        font-weight: bold;         /* Bold font for the last item */
-        background-color: #343a40; /* Different background color */
-    }
-
-    /* Hover effect for the "Custom Range" */
-    .dropdown-item:last-child:hover {
-        background-color: #212529; /* Even darker background on hover */
-    }
-</style>
 
 <style>
   /* Add scrollable container for the table body */
@@ -143,22 +98,23 @@
           </button>
   
           <!-- Navbar links -->
-          <div class="container-fluid">
+          <div class="collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        TODAY
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <li><a class="dropdown-item" href="#">Last 5 minutes</a></li>
-                        <li><a class="dropdown-item" href="#">Last 30 minutes</a></li>
-                        <li><a class="dropdown-item" href="#">Last 1 hour</a></li>
-                        <li><a class="dropdown-item" href="#">Last 24 hours</a></li>
-                        <li><a class="dropdown-item" href="#">Custom Range</a></li>
-                    </ul>
-                </li>
+              <!-- Your Dropdown -->
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                   data-bs-toggle="dropdown" aria-expanded="false">
+                  TODAY
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                  <li><a class="dropdown-item" href="#">Last 5 minutes</a></li>
+                  <li><a class="dropdown-item" href="#">Last 30 minutes</a></li>
+                  <li><a class="dropdown-item" href="#">Last 1 hour</a></li>
+                  <li><a class="dropdown-item" href="#">Last 24 hours</a></li>
+                </ul>
+              </li>
             </ul>
-        </div>
+          </div>
       </div>
   </nav>
   
@@ -615,259 +571,13 @@
       </div>
     </div>
   </div>
-  <!--   Core JS Files   -->
+  <!--   Core JS Files   
   <script src="../static/js/core/popper.min.js"></script>
-  <script src="../static/js/core/bootstrap.min.js"></script>
+  <script src="../static/js/core/bootstrap.min.js"></script> -->
   <script src="../static/js/plugins/perfect-scrollbar.min.js"></script>
   <script src="../static/js/plugins/smooth-scrollbar.min.js"></script>
   <script src="../static/js/plugins/chartjs.min.js"></script>
-  <script>
-    var ctx = document.getElementById("chart-bars").getContext("2d");
-
-    new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: ["M", "T", "W", "T", "F", "S", "S"],
-        datasets: [{
-          label: "Sales",
-          tension: 0.4,
-          borderWidth: 0,
-          borderRadius: 4,
-          borderSkipped: false,
-          backgroundColor: "rgba(255, 255, 255, .8)",
-          data: [50, 20, 10, 22, 50, 10, 40],
-          maxBarThickness: 6
-        }, ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false,
-          }
-        },
-        interaction: {
-          intersect: false,
-          mode: 'index',
-        },
-        scales: {
-          y: {
-            grid: {
-              drawBorder: false,
-              display: true,
-              drawOnChartArea: true,
-              drawTicks: false,
-              borderDash: [5, 5],
-              color: 'rgba(255, 255, 255, .2)'
-            },
-            ticks: {
-              suggestedMin: 0,
-              suggestedMax: 500,
-              beginAtZero: true,
-              padding: 10,
-              font: {
-                size: 14,
-                weight: 300,
-                family: "Roboto",
-                style: 'normal',
-                lineHeight: 2
-              },
-              color: "#fff"
-            },
-          },
-          x: {
-            grid: {
-              drawBorder: false,
-              display: true,
-              drawOnChartArea: true,
-              drawTicks: false,
-              borderDash: [5, 5],
-              color: 'rgba(255, 255, 255, .2)'
-            },
-            ticks: {
-              display: true,
-              color: '#f8f9fa',
-              padding: 10,
-              font: {
-                size: 14,
-                weight: 300,
-                family: "Roboto",
-                style: 'normal',
-                lineHeight: 2
-              },
-            }
-          },
-        },
-      },
-    });
-
-
-    var ctx2 = document.getElementById("chart-line").getContext("2d");
-
-    new Chart(ctx2, {
-      type: "line",
-      data: {
-        labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-        datasets: [{
-          label: "Mobile apps",
-          tension: 0,
-          borderWidth: 0,
-          pointRadius: 5,
-          pointBackgroundColor: "rgba(255, 255, 255, .8)",
-          pointBorderColor: "transparent",
-          borderColor: "rgba(255, 255, 255, .8)",
-          borderColor: "rgba(255, 255, 255, .8)",
-          borderWidth: 4,
-          backgroundColor: "transparent",
-          fill: true,
-          data: [50, 40, 300, 320, 500, 350, 200, 230, 500],
-          maxBarThickness: 6
-
-        }],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false,
-          }
-        },
-        interaction: {
-          intersect: false,
-          mode: 'index',
-        },
-        scales: {
-          y: {
-            grid: {
-              drawBorder: false,
-              display: true,
-              drawOnChartArea: true,
-              drawTicks: false,
-              borderDash: [5, 5],
-              color: 'rgba(255, 255, 255, .2)'
-            },
-            ticks: {
-              display: true,
-              color: '#f8f9fa',
-              padding: 10,
-              font: {
-                size: 14,
-                weight: 300,
-                family: "Roboto",
-                style: 'normal',
-                lineHeight: 2
-              },
-            }
-          },
-          x: {
-            grid: {
-              drawBorder: false,
-              display: false,
-              drawOnChartArea: false,
-              drawTicks: false,
-              borderDash: [5, 5]
-            },
-            ticks: {
-              display: true,
-              color: '#f8f9fa',
-              padding: 10,
-              font: {
-                size: 14,
-                weight: 300,
-                family: "Roboto",
-                style: 'normal',
-                lineHeight: 2
-              },
-            }
-          },
-        },
-      },
-    });
-
-    var ctx3 = document.getElementById("chart-line-tasks").getContext("2d");
-
-    new Chart(ctx3, {
-      type: "line",
-      data: {
-        labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-        datasets: [{
-          label: "Mobile apps",
-          tension: 0,
-          borderWidth: 0,
-          pointRadius: 5,
-          pointBackgroundColor: "rgba(255, 255, 255, .8)",
-          pointBorderColor: "transparent",
-          borderColor: "rgba(255, 255, 255, .8)",
-          borderWidth: 4,
-          backgroundColor: "transparent",
-          fill: true,
-          data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
-          maxBarThickness: 6
-
-        }],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false,
-          }
-        },
-        interaction: {
-          intersect: false,
-          mode: 'index',
-        },
-        scales: {
-          y: {
-            grid: {
-              drawBorder: false,
-              display: true,
-              drawOnChartArea: true,
-              drawTicks: false,
-              borderDash: [5, 5],
-              color: 'rgba(255, 255, 255, .2)'
-            },
-            ticks: {
-              display: true,
-              padding: 10,
-              color: '#f8f9fa',
-              font: {
-                size: 14,
-                weight: 300,
-                family: "Roboto",
-                style: 'normal',
-                lineHeight: 2
-              },
-            }
-          },
-          x: {
-            grid: {
-              drawBorder: false,
-              display: false,
-              drawOnChartArea: false,
-              drawTicks: false,
-              borderDash: [5, 5]
-            },
-            ticks: {
-              display: true,
-              color: '#f8f9fa',
-              padding: 10,
-              font: {
-                size: 14,
-                weight: 300,
-                family: "Roboto",
-                style: 'normal',
-                lineHeight: 2
-              },
-            }
-          },
-        },
-      },
-    });
-  </script>
+  
   <script>
     var win = navigator.platform.indexOf('Win') > -1;
     if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -877,12 +587,15 @@
       Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
     }
   </script>
+  <!-- Bootstrap Bundle with Popper.js -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
   <!-- Github buttons -->
   <script async defer src="https://buttons.github.io/buttons.js"></script>
   <!-- Control Center for Material Dashboard: parallax effects, scripts for the example templates etc -->
   <script src="../static/js/material-dashboard.min.js?v=3.1.0"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+  <!--<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>-->
   <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
   <script src="/static/js/dashboard.js"></script>
   <script src="/static/js/dashboard_overall.js"></script>
